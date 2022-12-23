@@ -15,9 +15,10 @@ local _trainAttachment = require(modules:WaitForChild("TrainAttachment")) -- Wil
 
 local trainMethods = {}
 
-function trainMethods:StepMovement(trainDirection)
-    self.states.direction = trainDirection
-    
+function trainMethods:Step()
+    if self.states.movement == trainState.movement.mobile then
+        trainMovement.Step(self.states.direction, self.trainConfig)
+    end
 end
 
 local function new(_trainConfig: {}, tempSensors, tempBody) -- Will be used after junctioning (SILENCED)
@@ -25,19 +26,22 @@ local function new(_trainConfig: {}, tempSensors, tempBody) -- Will be used afte
     local newTrain = setmetatable({
         trainConfig = {
             maxSpeed = 10,
-            speed = 0
+            setSpeed = 0,
+            currentSpeed = 0
         },
         states = {
             movement = trainState.trainMovement.stationary,
             junction = trainState.trainJunction.none,
             direction = trainState.trainDirection.none
         },
-        sensors = {{a = tempSensors.a, b = tempSensors.b}}, -- in order { [1] = {a = sensor, b = sensor}, ...} [1] = front of train
-        trainBody = {{body = tempBody, sensor = {a = tempSensors.a, b = tempSensors.b}}} -- in order { [1] = { body = {}, sensor = {a = sensor, b = sensor} }, ...} [1] = front of train
+        sensors = {{a = tempSensors.a, b = tempSensors.b, distance = 10}}, -- in order { [1] = {a = sensor, b = sensor, distance = number}, ...} [1] = front of train
+        trainBody = {{body = tempBody, sensor = {a = tempSensors.a, b = tempSensors.b}}} -- in order { [1] = { body = {}, sensor = {a = sensor, b = sensor}, distance = number}, ...} [1] = front of train
     }, {__index = trainMethods})
-
+    
+    -- TESTING
+    newTrain.trainConfig.setSpeed = 5
     RunService.Heartbeat:Connect(function(_)
-        newTrain:StepMovement(trainState.trainDirection.forward)
+        newTrain:Step()
     end)
     return newTrain
 end
