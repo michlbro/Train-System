@@ -1,5 +1,6 @@
 local modules = script.Parent
 local trainState = require(modules:WaitForChild("TrainStates"))
+local trainSensorRaycast = require(modules:WaitForChild("TrainSensorRaycast"))
 
 local tracksFolder = workspace.Tracks--<pathToTracksFolder>
 
@@ -9,6 +10,9 @@ function trainMovement.Step(direction, _trainConfig, sensors)
     local amount = (direction == trainState.direction.forward) and 1 or (direction == trainState.direction.backward) and -1 or 0
     -- Physics here will change these 1, -1 and 0 values
     -- Using Suvat equations
+
+    -- Check for sensors
+    local sensor, sensorType = trainSensorRaycast.CastRay()
 
     trainMovement.AlignSensors(sensors)
     trainMovement.ApplyMovement(amount, sensors)
