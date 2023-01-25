@@ -1,0 +1,14 @@
+{
+  "name": "Train-System",
+  "tree": {
+    "$className": "DataModel",
+
+
+    "ServerScriptService": {
+      "Train": {
+        "$className": "Folder",
+        "$path": "src/Train"
+      }
+    }
+  }
+}
